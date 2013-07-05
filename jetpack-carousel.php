@@ -17,6 +17,8 @@ this little plugin which is exactly the copy of JetPack module. I will update th
 
 load_plugin_textdomain('carousel', false, basename( dirname( __FILE__ ) ) . '/languages' );
 
+require( __DIR__ . '/video-embed-thumbnail-generator/video-embed-thumbnail-generator.php' );
+
 class No_Jetpack_Carousel {
 
 	var $prebuilt_widths = array( 370, 700, 1000, 1200, 1400, 2000 );
@@ -92,7 +94,7 @@ class No_Jetpack_Carousel {
             $attr['include'] = $attr['ids'];
         }
 
-        $output = enqueue_assets($output);
+        $output = $this->enqueue_assets($output);
 
         // We're trusting author input, so let's at least make sure it looks like a valid orderby statement
         if ( isset( $attr['orderby'] ) ) {
@@ -237,6 +239,7 @@ class No_Jetpack_Carousel {
 			wp_register_script( 'spin', plugins_url( 'spin.js', __FILE__ ), false, '1.2.4' );
 			wp_register_script( 'jquery.spin', plugins_url( 'jquery.spin.js', __FILE__ ) , array( 'jquery', 'spin' ) );
 
+			wp_enqueue_script( 'html5media', plugins_url( 'html5media.min.js', __FILE__ ), array( 'jquery' ), false, true );
 			wp_enqueue_script( 'jetpack-carousel', plugins_url( 'jetpack-carousel.js', __FILE__ ), array( 'jquery.spin' ), $this->asset_version( '20130109' ), true );
 
 			// Note: using  home_url() instead of admin_url() for ajaxurl to be sure  to get same domain on wpcom when using mapped domains (also works on self-hosted)
@@ -338,6 +341,7 @@ class No_Jetpack_Carousel {
 		$attachment       = get_post( $attachment_id );
 		$attachment_title = wptexturize( $attachment->post_title );
 		$attachment_desc  = wpautop( wptexturize( $attachment->post_content ) );
+        $mime_type        = get_post_mime_type( $attachment_id );
 
 		// Not yet providing geo-data, need to "fuzzify" for privacy
 		if ( ! empty( $img_meta ) ) {
@@ -352,7 +356,7 @@ class No_Jetpack_Carousel {
 		$html = str_replace(
 			'<img ',
 			sprintf(
-				'<img data-attachment-id="%1$d" data-orig-file="%2$s" data-orig-size="%3$s" data-comments-opened="%4$s" data-image-meta="%5$s" data-image-title="%6$s" data-image-description="%7$s" data-medium-file="%8$s" data-large-file="%9$s" ',
+				'<img data-attachment-id="%1$d" data-orig-file="%2$s" data-orig-size="%3$s" data-comments-opened="%4$s" data-image-meta="%5$s" data-image-title="%6$s" data-image-description="%7$s" data-medium-file="%8$s" data-large-file="%9$s" data-mime-type="%10$s" ',
 				$attachment_id,
 				esc_attr( $orig_file ),
 				$size,
@@ -361,7 +365,8 @@ class No_Jetpack_Carousel {
 				esc_attr( $attachment_title ),
 				esc_attr( $attachment_desc ),
 				esc_attr( $medium_file ),
-				esc_attr( $large_file )
+                esc_attr( $large_file ),
+                esc_attr( $mime_type )
 			),
 			$html
 		);

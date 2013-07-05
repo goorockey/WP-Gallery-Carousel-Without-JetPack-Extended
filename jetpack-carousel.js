@@ -246,8 +246,12 @@ jQuery(document).ready(function($) {
 				.append(close_hint)
 				.appendTo($('body'))
 				.click(function(e){
-					var target = $(e.target), wrap = target.parents('div.jp-carousel-wrap'), data = wrap.data('carousel-extra'),
-						slide = wrap.find('div.selected'), attachment_id = slide.data('attachment-id');
+					var target = $(e.target), 
+                        wrap = target.parents('div.jp-carousel-wrap'), 
+                        data = wrap.data('carousel-extra'),
+						slide = wrap.find('div.selected'), 
+                        attachment_id = slide.data('attachment-id');
+
 					data = data || [];
 
 					if ( target.is(gallery) || target.parents().add(target).is(close_hint) ) {
