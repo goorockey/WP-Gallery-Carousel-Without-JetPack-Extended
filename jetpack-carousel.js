@@ -360,7 +360,9 @@ jQuery(document).ready(function($) {
 							});
 						}
 					} else if ( ! target.parents( '.jp-carousel-info' ).length ) {
+                        /*
 						container.jp_carousel('next');
+                        */
 					}
 				})
 				.bind('jp_carousel.afterOpen', function(){
@@ -740,6 +742,7 @@ jQuery(document).ready(function($) {
 			var width = this.jp_carousel('slideDimensions').width,
 				x = 0;
 
+            var i = 0;
 			// Calculate the new src.
 			items.each(function(i){
 				var src_item  = $(this),
@@ -749,8 +752,12 @@ jQuery(document).ready(function($) {
 					orig_size = {width: parseInt(parts[0], 10), height: parseInt(parts[1], 10)},
 					medium_file     = src_item.data('medium-file') || '',
 					large_file      = src_item.data('large-file') || '';
+                    mime_type       = src_item.data('mime-type') || '';
 
 					src = src_item.data('orig-file');
+
+                var is_video = (-1 != mime_type.search(/video/i)) ? true : false;
+                if (!is_video) {
 
 					src = gallery.jp_carousel('selectBestImageSize', {
 						orig_file   : src,
@@ -761,6 +768,7 @@ jQuery(document).ready(function($) {
 						medium_file : medium_file,
 						large_file  : large_file
 					});
+                }
 
 				// Set the final src
 				$(this).data( 'gallery-src', src );
@@ -784,6 +792,9 @@ jQuery(document).ready(function($) {
 					medium_file     = src_item.data('medium-file') || '',
 					large_file      = src_item.data('large-file') || '',
 					orig_file	    = src_item.data('orig-file') || '';
+                    mime_type       = src_item.data('mime-type') || '';
+
+                var is_video = (-1 != mime_type.search(/video/i)) ? true : false;
 
 				var tiledCaption = src_item.parents('div.tiled-gallery-item').find('div.tiled-gallery-caption').html();
 				if ( tiledCaption )
@@ -799,31 +810,53 @@ jQuery(document).ready(function($) {
 							.css({
 								//'position' : 'fixed',
 								'left'     : i < start_index ? -1000 : gallery.width()
-							})
-							.append($('<img>'))
-							.appendTo(gallery)
-							.data('src', src )
-							.data('title', title)
-							.data('desc', description)
-							.data('caption', caption)
-							.data('attachment-id', attachment_id)
-							.data('permalink', src_item.parents('a').attr('href'))
-							.data('orig-size', orig_size)
-							.data('comments-opened', comments_opened)
-							.data('image-meta', image_meta)
-							.data('medium-file', medium_file)
-							.data('large-file', large_file)
-							.data('orig-file', orig_file)
-							.jp_carousel('fitslide', false);
+							});
 
-					// preloading all images
-					slide.find('img').first().attr('src', src );
+                    if ( is_video ) {
+                        slide.append($('<video>').attr({ controls : 'controls', preload  : 'none', }))
+                            .appendTo(gallery)
+                            .data('src', src )
+                            .data('title', title)
+                            .data('desc', description)
+                            .data('caption', caption)
+                            .data('attachment-id', attachment_id)
+                            .data('permalink', src_item.parents('a').attr('href'))
+                            .data('orig-size', orig_size)
+                            .data('comments-opened', comments_opened)
+                            .data('image-meta', image_meta)
+                            .data('medium-file', medium_file)
+                            .data('large-file', large_file)
+                            .data('orig-file', orig_file)
+                            .jp_carousel('fitSlide', false);
+
+                        // preloading all images
+                        slide.find('video').first().attr('src', src );
+                    } else {
+                        slide.append($('<img>'))
+                            .appendTo(gallery)
+                            .data('src', src )
+                            .data('title', title)
+                            .data('desc', description)
+                            .data('caption', caption)
+                            .data('attachment-id', attachment_id)
+                            .data('permalink', src_item.parents('a').attr('href'))
+                            .data('orig-size', orig_size)
+                            .data('comments-opened', comments_opened)
+                            .data('image-meta', image_meta)
+                            .data('medium-file', medium_file)
+                            .data('large-file', large_file)
+                            .data('orig-file', orig_file)
+                            .jp_carousel('fitSlide', false);
+
+                        // preloading all images
+                        slide.find('img').first().attr('src', src );
+                    }
 				}
 			});
 			return this;
 		},
 
-		selectbestimagesize: function(args) {
+		selectBestImageSize: function(args) {
 			if ( 'object' != typeof args )
 				args = {};
 
@@ -838,12 +871,12 @@ jQuery(document).ready(function($) {
 
 			var medium_size       = args.medium_file.replace(/^https?:\/\/.+-([\d]+x[\d]+)\..+$/, '$1'),
 				medium_size_parts = (medium_size != args.medium_file) ? medium_size.split('x') : [args.orig_width, 0],
-				medium_width      = parseint( medium_size_parts[0], 10 ),
-				medium_height     = parseint( medium_size_parts[1], 10 ),
+				medium_width      = parseInt( medium_size_parts[0], 10 ),
+				medium_height     = parseInt( medium_size_parts[1], 10 ),
 				large_size        = args.large_file.replace(/^https?:\/\/.+-([\d]+x[\d]+)\..+$/, '$1'),
 				large_size_parts  = (large_size != args.large_file) ? large_size.split('x') : [args.orig_width, 0],
-				large_width       = parseint( large_size_parts[0], 10 ),
-				large_height      = parseint( large_size_parts[1], 10 );
+				large_width       = parseInt( large_size_parts[0], 10 ),
+				large_height      = parseInt( large_size_parts[1], 10 );
 
 			// give devices with a higher devicepixelratio higher-res images (retina display = 2, android phones = 1.5, etc)
 			if ('undefined' != typeof window.devicepixelratio && window.devicepixelratio > 1) {
@@ -861,9 +894,9 @@ jQuery(document).ready(function($) {
 		},
 
 
-		originaldimensions: function() {
+		originalDimensions: function() {
 			var splitted = $(this).data('orig-size').split(',');
-			return {width: parseint(splitted[0], 10), height: parseint(splitted[1], 10)};
+			return {width: parseInt(splitted[0], 10), height: parseInt(splitted[1], 10)};
 		},
 
 		format: function( args ) {
@@ -878,7 +911,7 @@ jQuery(document).ready(function($) {
 			});
 		},
 
-		shutterspeed: function(d) {
+		shutterSpeed: function(d) {
 			if (d >= 1)
 				return math.round(d) + 's';
 			var df = 1, top = 1, bot = 1;
@@ -889,7 +922,7 @@ jQuery(document).ready(function($) {
 				}
 				else {
 					bot += 1;
-					top = parseint(d * bot, 10);
+					top = parseInt(d * bot, 10);
 				}
 				df = top / bot;
 			}
@@ -902,7 +935,7 @@ jQuery(document).ready(function($) {
 			return top + '/' + bot + 's';
 		},
 
-		parsetitledesc: function( value ) {
+		parseTitleDesc: function( value ) {
 			if ( !value.match(' ') && value.match('_') )
 				return '';
 			// prefix list originally based on http://commons.wikimedia.org/wiki/mediawiki:filename-prefix-blacklist
@@ -926,7 +959,7 @@ jQuery(document).ready(function($) {
 				'screen shot [0-9]+'      // mac screenshots
 			])
 			.each(function(key, val){
-				regex = new regexp('^' + val);
+				regex = new RegExp('^' + val);
 				if ( regex.test(value) ) {
 					value = '';
 					return;
@@ -935,14 +968,14 @@ jQuery(document).ready(function($) {
 			return value;
 		},
 
-		gettitledesc: function( data ) {
+		getTitleDesc: function( data ) {
 			var title ='', desc = '', markup = '', target, commentwrappere;
 
 			target = $( 'div.jp-carousel-titleanddesc', 'div.jp-carousel-wrap' );
 			target.hide();
 
-			title = gallery.jp_carousel('parsetitledesc', data.title) || '';
-			desc  = gallery.jp_carousel('parsetitledesc', data.desc)  || '';
+			title = gallery.jp_carousel('parseTitleDesc', data.title) || '';
+			desc  = gallery.jp_carousel('parseTitleDesc', data.desc)  || '';
 
 			if ( title.length || desc.length ) {
 				// $('<div />').html(sometext).text() is a trick to go to html to plain text (including html emntities decode, etc)
@@ -952,20 +985,20 @@ jQuery(document).ready(function($) {
 				markup  = ( title.length ) ? '<div class="jp-carousel-titleanddesc-title">' + title + '</div>' : '';
 				markup += ( desc.length )  ? '<div class="jp-carousel-titleanddesc-desc">' + desc + '</div>'   : '';
 
-				target.html( markup ).fadein('slow');
+				target.html( markup ).fadeIn('slow');
 			}
 
 			$( 'div#jp-carousel-comment-form-container' ).css('margin-top', '20px');
 			$( 'div#jp-carousel-comments-loading' ).css('margin-top', '20px');
 		},
 
-		getmeta: function( meta ) {
-			if ( !meta || 1 != jetpackcarouselstrings.display_exif )
+		getMeta: function( meta ) {
+			if ( !meta || 1 != jetpackCarouselStrings.display_exif )
 				return false;
 
 			var $ul = $( '<ul></ul>' );
 			$.each( meta, function( key, val ) {
-				if ( 0 === parsefloat(val) || !val.length || -1 === $.inarray( key, [ 'camera', 'aperture', 'shutter_speed', 'focal_length' ] ) )
+				if ( 0 === parseFloat(val) || !val.length || -1 === $.inarray( key, [ 'camera', 'aperture', 'shutter_speed', 'focal_length' ] ) )
 					return;
 
 				switch( key ) {
@@ -973,7 +1006,7 @@ jQuery(document).ready(function($) {
 						val = val + 'mm';
 						break;
 					case 'shutter_speed':
-						val = gallery.jp_carousel('shutterspeed', val);
+						val = gallery.jp_carousel('shutterSpeed', val);
 						break;
 					case 'aperture':
 						val = 'f/' + val;
@@ -983,7 +1016,7 @@ jQuery(document).ready(function($) {
 						break;
 				}
 
-				$ul.append( '<li><h5>' + jetpackcarouselstrings[key] + '</h5>' + val + '</li>' );
+				$ul.append( '<li><h5>' + jetpackCarouselStrings[key] + '</h5>' + val + '</li>' );
 			});
 
 			$( 'div.jp-carousel-image-meta', 'div.jp-carousel-wrap' )
@@ -993,13 +1026,13 @@ jQuery(document).ready(function($) {
 				.append( $ul );
 		},
 
-		getfullsizelink: function(current) {
+		getFullSizeLink: function(current) {
 			if(!current || !current.data)
 				return false;
 			var original  = current.data('orig-file').replace(/\?.+$/, ''),
 				origsize  = current.data('orig-size').split(','),
-				permalink = $( '<a>'+gallery.jp_carousel('format', {'text': jetpackcarouselstrings.download_original, 'replacements': origsize})+'</a>' )
-					.addclass( 'jp-carousel-image-download' )
+				permalink = $( '<a>'+gallery.jp_carousel('format', {'text': jetpackCarouselStrings.download_original, 'replacements': origsize})+'</a>' )
+					.addClass( 'jp-carousel-image-download' )
 					.attr( 'href', original )
 					.attr( 'target', '_blank' );
 
@@ -1007,8 +1040,8 @@ jQuery(document).ready(function($) {
 				.append( permalink );
 		},
 
-		getmap: function( meta ) {
-			if ( !meta.latitude || !meta.longitude || 1 != jetpackcarouselstrings.display_geo )
+		getMap: function( meta ) {
+			if ( !meta.latitude || !meta.longitude || 1 != jetpackCarouselStrings.display_geo )
 				return;
 
 			var latitude  = meta.latitude,
@@ -1018,7 +1051,7 @@ jQuery(document).ready(function($) {
 				style     = '&scale=2&style=feature:all|element:all|invert_lightness:true|hue:0x0077ff|saturation:-50|lightness:-5|gamma:0.91';
 
 			$mapbox
-				.addclass( 'jp-carousel-image-map' )
+				.addClass( 'jp-carousel-image-map' )
 				.html( '<img width="154" height="154" src="https://maps.googleapis.com/maps/api/staticmap?\
 							center=' + latitude + ',' + longitude + '&\
 							zoom=8&\
@@ -1037,7 +1070,7 @@ jQuery(document).ready(function($) {
 				.prependto( $metabox );
 		},
 
-		testcommentsopened: function( opened ) {
+		testCommentsOpened: function( opened ) {
 			if ( 1 == parseInt( opened, 10 ) ) {
 					$('.jp-carousel-buttons').fadeIn('fast');
 				commentForm.fadeIn('fast');

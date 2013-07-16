@@ -170,7 +170,8 @@ div.jp-carousel-buttons a:hover {
 	transition: 400ms ease-out;
 }
 
-.jp-carousel-slide img {
+.jp-carousel-slide img, video
+{
 	display: block;
 	width: 100% !important;
 	height: 100% !important;

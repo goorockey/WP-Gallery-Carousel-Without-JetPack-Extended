@@ -49,7 +49,6 @@ class No_Jetpack_Carousel {
 			add_action( 'wp_ajax_nopriv_get_attachment_comments', array( $this, 'get_attachment_comments' ) );
 			add_action( 'wp_ajax_post_attachment_comment', array( $this, 'post_attachment_comment' ) );
 			add_action( 'wp_ajax_nopriv_post_attachment_comment', array( $this, 'post_attachment_comment' ) );
-			add_action( 'wp_get_attachment_link', array( $this, 'get_attachment_link' ) );
 		} else {
 			if ( ! $this->in_jetpack ) {
 				if ( 0 == $this->test_1or0_option( get_option( 'carousel_enable_it' ), true ) )
@@ -68,17 +67,14 @@ class No_Jetpack_Carousel {
 		}
 	}
 
-    function get_attachment_link( $id = 0, $size = 'thumbnail', $permalink = false, $icon = false, $text = false ) {  
-        $id = intval( $id );
-        $_post = get_post( $id );
-
-        if ( empty( $_post ) || ( 'attachment' != $_post->post_type ) || ! $url = wp_get_attachment_url( $_post->ID ) )
-            return __( 'Missing Attachment' );
-
-        if ( preg_match( '/video/', $_post->post_mime_type ) ) {
-        }
+    function get_video_size($object_id) {
+        $video_width = get_post_meta($object_id, "_kgflashmediaplayer-actualwidth", true);
+        if ( !$video_width ) { $video_width = get_post_meta($object_id, "_kgflashmediaplayer-width", true); }
         
+        $video_height = get_post_meta($object_id, "_kgflashmediaplayer-actualheight", true);
+        if ( !$video_height ) { $video_height = get_post_meta($object_id, "_kgflashmediaplayer-height", true); }
 
+        return array('width' => $video_width, 'height' => $video_height);
     }
 
 	function maybe_disable_jp_carousel() {
@@ -93,6 +89,17 @@ class No_Jetpack_Carousel {
 	function asset_version( $version ) {
 		return apply_filters( 'jp_carousel_asset_version', $version );
 	}
+
+    function get_video_attachment_link( $attachment ) {
+        $url           = get_attachment_link( $attachment->ID );
+        $title         = esc_attr( $attachment->post_title );
+        $thumbnail_id  = get_post_meta( $attachment->ID, '_kgflashmediaplayer-poster-id', true );
+        $thumbnail_url = kgvid_get_attachment_medium_url( $thumbnail_id );
+
+        $html          = "<a href='{$url}' title='{$title}'><img src='{$thumbnail_url}' /></a>";
+
+        return $this->add_data_to_images( $html, $attachment->ID );
+    }
 
     function post_gallery( $output, $attr ) {
 
@@ -211,7 +218,11 @@ class No_Jetpack_Carousel {
 
         $i = 0;
         foreach ( $attachments as $id => $attachment ) {
-            $link = isset($attr['link']) && 'file' == $attr['link'] ? wp_get_attachment_link($id, $size, false, false) : wp_get_attachment_link($id, $size, true, false);
+            if ( true == preg_match( '/video/', $attachment->post_mime_type ) ) {
+                $link = $this->get_video_attachment_link( $attachment );
+            } else {
+                $link = isset($attr['link']) && 'file' == $attr['link'] ? wp_get_attachment_link($id, $size, false, false) : wp_get_attachment_link($id, $size, true, false);
+            }
 
             $output .= "<{$itemtag} class='gallery-item'>";
             $output .= "
@@ -323,13 +334,23 @@ class No_Jetpack_Carousel {
 		if ( $this->first_run ) // not in a gallery
 			return $html;
 
+        $mime_type       = get_post_mime_type( $attachment_id );
+        $is_video        = preg_match('/video/i', $mime_type);
+
 		$attachment_id   = intval( $attachment_id );
 		$orig_file       = wp_get_attachment_image_src( $attachment_id, 'full' );
 		$orig_file       = isset( $orig_file[0] ) ? $orig_file[0] : wp_get_attachment_url( $attachment_id );
 		$meta            = wp_get_attachment_metadata( $attachment_id );
-		$size            = isset( $meta['width'] ) ? intval( $meta['width'] ) . ',' . intval( $meta['height'] ) : '';
 		$img_meta        = ( ! empty( $meta['image_meta'] ) ) ? (array) $meta['image_meta'] : array();
 		$comments_opened = intval( comments_open( $attachment_id ) );
+
+        if ($is_video) {
+            $size = $this->get_video_size($attachment_id);
+            $size = intval($size['width']) . ',' . intval($size['height']);
+        } else {
+            $size = isset( $meta['width'] ) ? intval( $meta['width'] ) . ',' . intval( $meta['height'] ) : '';
+        }
+
 
 		/*
 		 * Note: Cannot generate a filename from the width and height wp_get_attachment_image_src() returns because
@@ -355,7 +376,6 @@ class No_Jetpack_Carousel {
 		$attachment       = get_post( $attachment_id );
 		$attachment_title = wptexturize( $attachment->post_title );
 		$attachment_desc  = wpautop( wptexturize( $attachment->post_content ) );
-        $mime_type        = get_post_mime_type( $attachment_id );
 
 		// Not yet providing geo-data, need to "fuzzify" for privacy
 		if ( ! empty( $img_meta ) ) {
