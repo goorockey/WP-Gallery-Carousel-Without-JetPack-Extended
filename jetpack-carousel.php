@@ -70,9 +70,11 @@ class No_Jetpack_Carousel {
     function get_video_size($object_id) {
         $video_width = get_post_meta($object_id, "_kgflashmediaplayer-actualwidth", true);
         if ( !$video_width ) { $video_width = get_post_meta($object_id, "_kgflashmediaplayer-width", true); }
+        if ( !$video_width ) { $video_width = 800; }
         
         $video_height = get_post_meta($object_id, "_kgflashmediaplayer-actualheight", true);
         if ( !$video_height ) { $video_height = get_post_meta($object_id, "_kgflashmediaplayer-height", true); }
+        if ( !$video_height ) { $video_height = 400; }
 
         return array('width' => $video_width, 'height' => $video_height);
     }

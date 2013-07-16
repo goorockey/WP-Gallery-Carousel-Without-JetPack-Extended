@@ -170,8 +170,7 @@ div.jp-carousel-buttons a:hover {
 	transition: 400ms ease-out;
 }
 
-.jp-carousel-slide img, video
-{
+.jp-carousel-slide img, .jp-carousel-slide video {
 	display: block;
 	width: 100% !important;
 	height: 100% !important;
@@ -192,7 +191,7 @@ div.jp-carousel-buttons a:hover {
 	transition: opacity 400ms linear;
 }
 
-.jp-carousel-slide.selected img {
+.jp-carousel-slide img, .jp-carousel-slide video {
 	filter: alpha(opacity=100);
 	opacity: 1;
 }
