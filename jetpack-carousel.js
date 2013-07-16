@@ -780,10 +780,10 @@ jQuery(document).ready(function($) {
 					title           = src_item.data('image-title') || '',
 					description     = src_item.data('image-description') || '',
 					caption         = src_item.parents('dl').find('dd.gallery-caption').html() || '',
-					src		= src_item.data('gallery-src') || '',
+					src		        = src_item.data('gallery-src') || '',
 					medium_file     = src_item.data('medium-file') || '',
 					large_file      = src_item.data('large-file') || '',
-					orig_file	= src_item.data('orig-file') || '';
+					orig_file	    = src_item.data('orig-file') || '';
 
 				var tiledCaption = src_item.parents('div.tiled-gallery-item').find('div.tiled-gallery-caption').html();
 				if ( tiledCaption )
@@ -814,16 +814,16 @@ jQuery(document).ready(function($) {
 							.data('medium-file', medium_file)
 							.data('large-file', large_file)
 							.data('orig-file', orig_file)
-							.jp_carousel('fitSlide', false);
+							.jp_carousel('fitslide', false);
 
-					// Preloading all images
+					// preloading all images
 					slide.find('img').first().attr('src', src );
 				}
 			});
 			return this;
 		},
 
-		selectBestImageSize: function(args) {
+		selectbestimagesize: function(args) {
 			if ( 'object' != typeof args )
 				args = {};
 
@@ -838,17 +838,17 @@ jQuery(document).ready(function($) {
 
 			var medium_size       = args.medium_file.replace(/^https?:\/\/.+-([\d]+x[\d]+)\..+$/, '$1'),
 				medium_size_parts = (medium_size != args.medium_file) ? medium_size.split('x') : [args.orig_width, 0],
-				medium_width      = parseInt( medium_size_parts[0], 10 ),
-				medium_height     = parseInt( medium_size_parts[1], 10 ),
+				medium_width      = parseint( medium_size_parts[0], 10 ),
+				medium_height     = parseint( medium_size_parts[1], 10 ),
 				large_size        = args.large_file.replace(/^https?:\/\/.+-([\d]+x[\d]+)\..+$/, '$1'),
 				large_size_parts  = (large_size != args.large_file) ? large_size.split('x') : [args.orig_width, 0],
-				large_width       = parseInt( large_size_parts[0], 10 ),
-				large_height      = parseInt( large_size_parts[1], 10 );
+				large_width       = parseint( large_size_parts[0], 10 ),
+				large_height      = parseint( large_size_parts[1], 10 );
 
-			// Give devices with a higher devicePixelRatio higher-res images (Retina display = 2, Android phones = 1.5, etc)
-			if ('undefined' != typeof window.devicePixelRatio && window.devicePixelRatio > 1) {
-				args.max_width  = args.max_width * window.devicePixelRatio;
-				args.max_height = args.max_height * window.devicePixelRatio;
+			// give devices with a higher devicepixelratio higher-res images (retina display = 2, android phones = 1.5, etc)
+			if ('undefined' != typeof window.devicepixelratio && window.devicepixelratio > 1) {
+				args.max_width  = args.max_width * window.devicepixelratio;
+				args.max_height = args.max_height * window.devicepixelratio;
 			}
 
 			if ( large_width >= args.max_width || large_height >= args.max_height )
@@ -861,9 +861,9 @@ jQuery(document).ready(function($) {
 		},
 
 
-		originalDimensions: function() {
+		originaldimensions: function() {
 			var splitted = $(this).data('orig-size').split(',');
-			return {width: parseInt(splitted[0], 10), height: parseInt(splitted[1], 10)};
+			return {width: parseint(splitted[0], 10), height: parseint(splitted[1], 10)};
 		},
 
 		format: function( args ) {
@@ -878,23 +878,23 @@ jQuery(document).ready(function($) {
 			});
 		},
 
-		shutterSpeed: function(d) {
+		shutterspeed: function(d) {
 			if (d >= 1)
-				return Math.round(d) + 's';
+				return math.round(d) + 's';
 			var df = 1, top = 1, bot = 1;
-			var limit = 1e5; //Increase for greater precision.
+			var limit = 1e5; //increase for greater precision.
 			while (df != d && limit-- > 0) {
 				if (df < d) {
 					top += 1;
 				}
 				else {
 					bot += 1;
-					top = parseInt(d * bot, 10);
+					top = parseint(d * bot, 10);
 				}
 				df = top / bot;
 			}
 			if (top > 1) {
-				bot = Math.round(bot / top);
+				bot = math.round(bot / top);
 				top = 1;
 			}
 			if (bot <= 1)
@@ -902,31 +902,31 @@ jQuery(document).ready(function($) {
 			return top + '/' + bot + 's';
 		},
 
-		parseTitleDesc: function( value ) {
+		parsetitledesc: function( value ) {
 			if ( !value.match(' ') && value.match('_') )
 				return '';
-			// Prefix list originally based on http://commons.wikimedia.org/wiki/MediaWiki:Filename-prefix-blacklist
+			// prefix list originally based on http://commons.wikimedia.org/wiki/mediawiki:filename-prefix-blacklist
 			var prefixes = $([
-				'CIMG',                   // Casio
-				'DSC_',                   // Nikon
-				'DSCF',                   // Fuji
-				'DSCN',                   // Nikon
-				'DUW',                    // some mobile phones
-				'GEDC',                   // GE
-				'IMG',                    // generic
-				'JD',                     // Jenoptik
-				'MGP',                    // Pentax
-				'PICT',                   // misc.
-				'Imagen',                 // misc.
-				'Foto',                   // misc.
-				'DSC',                    // misc.
-				'Scan',                   // Scanners
-				'SANY',                   // Sanyo
-				'SAM',                    // Samsung
-				'Screen Shot [0-9]+'      // Mac screenshots
+				'cimg',                   // casio
+				'dsc_',                   // nikon
+				'dscf',                   // fuji
+				'dscn',                   // nikon
+				'duw',                    // some mobile phones
+				'gedc',                   // ge
+				'img',                    // generic
+				'jd',                     // jenoptik
+				'mgp',                    // pentax
+				'pict',                   // misc.
+				'imagen',                 // misc.
+				'foto',                   // misc.
+				'dsc',                    // misc.
+				'scan',                   // scanners
+				'sany',                   // sanyo
+				'sam',                    // samsung
+				'screen shot [0-9]+'      // mac screenshots
 			])
 			.each(function(key, val){
-				regex = new RegExp('^' + val);
+				regex = new regexp('^' + val);
 				if ( regex.test(value) ) {
 					value = '';
 					return;
@@ -935,37 +935,37 @@ jQuery(document).ready(function($) {
 			return value;
 		},
 
-		getTitleDesc: function( data ) {
-			var title ='', desc = '', markup = '', target, commentWrappere;
+		gettitledesc: function( data ) {
+			var title ='', desc = '', markup = '', target, commentwrappere;
 
 			target = $( 'div.jp-carousel-titleanddesc', 'div.jp-carousel-wrap' );
 			target.hide();
 
-			title = gallery.jp_carousel('parseTitleDesc', data.title) || '';
-			desc  = gallery.jp_carousel('parseTitleDesc', data.desc)  || '';
+			title = gallery.jp_carousel('parsetitledesc', data.title) || '';
+			desc  = gallery.jp_carousel('parsetitledesc', data.desc)  || '';
 
 			if ( title.length || desc.length ) {
-				// $('<div />').html(sometext).text() is a trick to go to HTML to plain text (including HTML emntities decode, etc)
+				// $('<div />').html(sometext).text() is a trick to go to html to plain text (including html emntities decode, etc)
 				if ( $('<div />').html(title).text() == $('<div />').html(desc).text() )
 					title = '';
 
 				markup  = ( title.length ) ? '<div class="jp-carousel-titleanddesc-title">' + title + '</div>' : '';
 				markup += ( desc.length )  ? '<div class="jp-carousel-titleanddesc-desc">' + desc + '</div>'   : '';
 
-				target.html( markup ).fadeIn('slow');
+				target.html( markup ).fadein('slow');
 			}
 
 			$( 'div#jp-carousel-comment-form-container' ).css('margin-top', '20px');
 			$( 'div#jp-carousel-comments-loading' ).css('margin-top', '20px');
 		},
 
-		getMeta: function( meta ) {
-			if ( !meta || 1 != jetpackCarouselStrings.display_exif )
+		getmeta: function( meta ) {
+			if ( !meta || 1 != jetpackcarouselstrings.display_exif )
 				return false;
 
 			var $ul = $( '<ul></ul>' );
 			$.each( meta, function( key, val ) {
-				if ( 0 === parseFloat(val) || !val.length || -1 === $.inArray( key, [ 'camera', 'aperture', 'shutter_speed', 'focal_length' ] ) )
+				if ( 0 === parsefloat(val) || !val.length || -1 === $.inarray( key, [ 'camera', 'aperture', 'shutter_speed', 'focal_length' ] ) )
 					return;
 
 				switch( key ) {
@@ -973,7 +973,7 @@ jQuery(document).ready(function($) {
 						val = val + 'mm';
 						break;
 					case 'shutter_speed':
-						val = gallery.jp_carousel('shutterSpeed', val);
+						val = gallery.jp_carousel('shutterspeed', val);
 						break;
 					case 'aperture':
 						val = 'f/' + val;
@@ -983,7 +983,7 @@ jQuery(document).ready(function($) {
 						break;
 				}
 
-				$ul.append( '<li><h5>' + jetpackCarouselStrings[key] + '</h5>' + val + '</li>' );
+				$ul.append( '<li><h5>' + jetpackcarouselstrings[key] + '</h5>' + val + '</li>' );
 			});
 
 			$( 'div.jp-carousel-image-meta', 'div.jp-carousel-wrap' )
@@ -993,13 +993,13 @@ jQuery(document).ready(function($) {
 				.append( $ul );
 		},
 
-		getFullSizeLink: function(current) {
+		getfullsizelink: function(current) {
 			if(!current || !current.data)
 				return false;
 			var original  = current.data('orig-file').replace(/\?.+$/, ''),
-				origSize  = current.data('orig-size').split(','),
-				permalink = $( '<a>'+gallery.jp_carousel('format', {'text': jetpackCarouselStrings.download_original, 'replacements': origSize})+'</a>' )
-					.addClass( 'jp-carousel-image-download' )
+				origsize  = current.data('orig-size').split(','),
+				permalink = $( '<a>'+gallery.jp_carousel('format', {'text': jetpackcarouselstrings.download_original, 'replacements': origsize})+'</a>' )
+					.addclass( 'jp-carousel-image-download' )
 					.attr( 'href', original )
 					.attr( 'target', '_blank' );
 
@@ -1007,37 +1007,37 @@ jQuery(document).ready(function($) {
 				.append( permalink );
 		},
 
-		getMap: function( meta ) {
-			if ( !meta.latitude || !meta.longitude || 1 != jetpackCarouselStrings.display_geo )
+		getmap: function( meta ) {
+			if ( !meta.latitude || !meta.longitude || 1 != jetpackcarouselstrings.display_geo )
 				return;
 
 			var latitude  = meta.latitude,
 				longitude = meta.longitude,
 				$metabox  = $( 'div.jp-carousel-image-meta', 'div.jp-carousel-wrap' ),
 				$mapbox   = $( '<div></div>' ),
-				style     = '&scale=2&style=feature:all|element:all|invert_lightness:true|hue:0x0077FF|saturation:-50|lightness:-5|gamma:0.91';
+				style     = '&scale=2&style=feature:all|element:all|invert_lightness:true|hue:0x0077ff|saturation:-50|lightness:-5|gamma:0.91';
 
 			$mapbox
-				.addClass( 'jp-carousel-image-map' )
+				.addclass( 'jp-carousel-image-map' )
 				.html( '<img width="154" height="154" src="https://maps.googleapis.com/maps/api/staticmap?\
 							center=' + latitude + ',' + longitude + '&\
 							zoom=8&\
 							size=154x154&\
 							sensor=false&\
-							markers=size:medium%7Ccolor:blue%7C' + latitude + ',' + longitude + style +'" class="gmap-main" />\
+							markers=size:medium%7ccolor:blue%7c' + latitude + ',' + longitude + style +'" class="gmap-main" />\
 							\
 						<div class="gmap-topright"><div class="imgclip"><img width="175" height="154" src="https://maps.googleapis.com/maps/api/staticmap?\
 							center=' + latitude + ',' + longitude + '&\
 							zoom=3&\
 							size=175x154&\
 							sensor=false&\
-							markers=size:small%7Ccolor:blue%7C' + latitude + ',' + longitude + style + '"c /></div></div>\
+							markers=size:small%7ccolor:blue%7c' + latitude + ',' + longitude + style + '"c /></div></div>\
 							\
 						' )
-				.prependTo( $metabox );
+				.prependto( $metabox );
 		},
 
-		testCommentsOpened: function( opened ) {
+		testcommentsopened: function( opened ) {
 			if ( 1 == parseInt( opened, 10 ) ) {
 					$('.jp-carousel-buttons').fadeIn('fast');
 				commentForm.fadeIn('fast');

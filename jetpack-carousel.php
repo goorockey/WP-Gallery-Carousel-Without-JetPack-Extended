@@ -49,6 +49,7 @@ class No_Jetpack_Carousel {
 			add_action( 'wp_ajax_nopriv_get_attachment_comments', array( $this, 'get_attachment_comments' ) );
 			add_action( 'wp_ajax_post_attachment_comment', array( $this, 'post_attachment_comment' ) );
 			add_action( 'wp_ajax_nopriv_post_attachment_comment', array( $this, 'post_attachment_comment' ) );
+			add_action( 'wp_get_attachment_link', array( $this, 'get_attachment_link' ) );
 		} else {
 			if ( ! $this->in_jetpack ) {
 				if ( 0 == $this->test_1or0_option( get_option( 'carousel_enable_it' ), true ) )
@@ -66,6 +67,19 @@ class No_Jetpack_Carousel {
 			Jetpack::module_configuration_load( dirname( dirname( __FILE__ ) ) . '/carousel.php', array( $this, 'jetpack_configuration_load' ) );
 		}
 	}
+
+    function get_attachment_link( $id = 0, $size = 'thumbnail', $permalink = false, $icon = false, $text = false ) {  
+        $id = intval( $id );
+        $_post = get_post( $id );
+
+        if ( empty( $_post ) || ( 'attachment' != $_post->post_type ) || ! $url = wp_get_attachment_url( $_post->ID ) )
+            return __( 'Missing Attachment' );
+
+        if ( preg_match( '/video/', $_post->post_mime_type ) ) {
+        }
+        
+
+    }
 
 	function maybe_disable_jp_carousel() {
 		return apply_filters( 'jp_carousel_maybe_disable', false );
