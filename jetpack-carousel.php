@@ -218,6 +218,13 @@ class No_Jetpack_Carousel {
         $gallery_div = "<div id='$selector' class='gallery galleryid-{$id} gallery-columns-{$columns} gallery-size-{$size_class}'>";
         $output = apply_filters( 'gallery_style', $gallery_style . "\n\t\t" . $gallery_div );
 
+        /* add filter bar */
+        if (!empty($attr['filter'])) {
+            $output .= "<div class='gallery-filter'>
+                            <input type='text' />
+                        </div>";
+        }
+
         $i = 0;
         foreach ( $attachments as $id => $attachment ) {
             if ( true == preg_match( '/video/', $attachment->post_mime_type ) ) {
