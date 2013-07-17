@@ -1,4 +1,3 @@
-
 jQuery(document).ready(function($) {
 
 	// gallery faded layer and container elements
@@ -1214,7 +1213,9 @@ jQuery(document).ready(function($) {
 	$( document.body ).on( 'click', 'div.gallery,div.tiled-gallery', function(e) {
 		if ( ! $(this).jp_carousel( 'testForData', e.currentTarget ) )
 			return;
-		if ( $(e.target).parent().hasClass('gallery-caption') )
+		if ( $(e.target).parent().hasClass('gallery-caption') || 
+             $(e.target).parent().hasClass('gallery-filter') ||
+             $(e.target).hasClass('gallery-filter'))
 			return;
 		e.preventDefault();
 		$(this).jp_carousel('open', {start_index: $(this).find('.gallery-item, .tiled-gallery-item').index($(e.target).parents('.gallery-item, .tiled-gallery-item'))});

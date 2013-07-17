@@ -220,8 +220,8 @@ class No_Jetpack_Carousel {
 
         /* add filter bar */
         if (!empty($attr['filter'])) {
-            $output .= "<div class='gallery-filter'>
-                            <input type='text' />
+            $output .= "<div class='gallery-filter-box sixteen columns'>
+                            <input class='gallery-filter' type='text' />
                         </div>";
         }
 
@@ -274,8 +274,8 @@ class No_Jetpack_Carousel {
 			wp_register_script( 'jquery.spin', plugins_url( 'jquery.spin.js', __FILE__ ) , array( 'jquery', 'spin' ) );
 
 			wp_enqueue_script( 'html5media', plugins_url( 'html5media.min.js', __FILE__ ), array( 'jquery' ), false, true );
-			wp_enqueue_script( 'gallery', plugins_url( 'gallery.js', __FILE__ ), array( 'jquery' ), false, true );
 			wp_enqueue_script( 'jetpack-carousel', plugins_url( 'jetpack-carousel.js', __FILE__ ), array( 'jquery.spin' ), $this->asset_version( '20130109' ), true );
+			wp_enqueue_script( 'gallery', plugins_url( 'gallery.js', __FILE__ ), array( 'jquery' ), false, true );
 
 			// Note: using  home_url() instead of admin_url() for ajaxurl to be sure  to get same domain on wpcom when using mapped domains (also works on self-hosted)
 			// Also: not hardcoding path since there is no guarantee site is running on site root in self-hosted context.
