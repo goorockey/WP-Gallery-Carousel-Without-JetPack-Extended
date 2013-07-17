@@ -274,6 +274,7 @@ class No_Jetpack_Carousel {
 			wp_register_script( 'jquery.spin', plugins_url( 'jquery.spin.js', __FILE__ ) , array( 'jquery', 'spin' ) );
 
 			wp_enqueue_script( 'html5media', plugins_url( 'html5media.min.js', __FILE__ ), array( 'jquery' ), false, true );
+			wp_enqueue_script( 'gallery', plugins_url( 'gallery.js', __FILE__ ), array( 'jquery' ), false, true );
 			wp_enqueue_script( 'jetpack-carousel', plugins_url( 'jetpack-carousel.js', __FILE__ ), array( 'jquery.spin' ), $this->asset_version( '20130109' ), true );
 
 			// Note: using  home_url() instead of admin_url() for ajaxurl to be sure  to get same domain on wpcom when using mapped domains (also works on self-hosted)
@@ -323,6 +324,7 @@ class No_Jetpack_Carousel {
 			$localize_strings = apply_filters( 'jp_carousel_localize_strings', $localize_strings );
 			wp_localize_script( 'jetpack-carousel', 'jetpackCarouselStrings', $localize_strings );
 			wp_enqueue_style( 'jetpack-carousel', plugins_url( 'jetpack-carousel.css', __FILE__ ), array(), $this->asset_version( '20120629' ) );
+			wp_enqueue_style( 'gallery', plugins_url( 'gallery.css', __FILE__ ), array(), false );
 			global $is_IE;
 			if( $is_IE )
 			{
