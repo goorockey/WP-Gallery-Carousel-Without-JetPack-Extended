@@ -220,9 +220,11 @@ class No_Jetpack_Carousel {
 
         /* add filter bar */
         if (!empty($attr['filter'])) {
-            $output .= "<div class='gallery-filter-box sixteen columns'>
+            $output .= "<div class='gallery-filter-box'>
+                            <p>查找:</p>
                             <input class='gallery-filter' type='text' />
-                        </div>";
+                        </div>
+                        <br style='clear: both'>";
         }
 
         $i = 0;

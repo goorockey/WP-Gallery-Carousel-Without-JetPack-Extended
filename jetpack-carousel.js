@@ -1214,8 +1214,8 @@ jQuery(document).ready(function($) {
 		if ( ! $(this).jp_carousel( 'testForData', e.currentTarget ) )
 			return;
 		if ( $(e.target).parent().hasClass('gallery-caption') || 
-             $(e.target).parent().hasClass('gallery-filter') ||
-             $(e.target).hasClass('gallery-filter'))
+             $(e.target).parents().hasClass('gallery-filter-box') ||
+             $(e.target).hasClass('gallery-filter-box'))
 			return;
 		e.preventDefault();
 		$(this).jp_carousel('open', {start_index: $(this).find('.gallery-item, .tiled-gallery-item').index($(e.target).parents('.gallery-item, .tiled-gallery-item'))});
