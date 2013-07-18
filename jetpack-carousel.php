@@ -95,8 +95,9 @@ class No_Jetpack_Carousel {
     function get_video_attachment_link( $attachment ) {
         $url           = get_attachment_link( $attachment->ID );
         $title         = esc_attr( $attachment->post_title );
-        $thumbnail_id  = get_post_meta( $attachment->ID, '_kgflashmediaplayer-poster-id', true );
-        $thumbnail_url = kgvid_get_attachment_medium_url( $thumbnail_id );
+        //$thumbnail_id  = get_post_meta( $attachment->ID, '_kgflashmediaplayer-poster-id', true );
+        //$thumbnail_url = kgvid_get_attachment_medium_url( $thumbnail_id );
+        $thumbnail_url  = get_post_meta( $attachment->ID, '_kgflashmediaplayer-poster', true );
 
         $html          = "<a href='{$url}' title='{$title}'><img src='{$thumbnail_url}' /></a>";
 
@@ -196,21 +197,22 @@ class No_Jetpack_Carousel {
         if ( apply_filters( 'use_default_gallery_style', true ) )
             $gallery_style = "
             <style type='text/css'>
-            #{$selector} {
-            margin: auto;
-            }
-            #{$selector} .gallery-item {
-            float: {$float};
-            margin-top: 10px;
-            text-align: center;
-            width: {$itemwidth}%;
-            }
-            #{$selector} img {
-            border: 2px solid #cfcfcf;
-            }
-            #{$selector} .gallery-caption {
-            margin-left: 0;
-            }
+                #{$selector} {
+                    margin: auto;
+                }
+                #{$selector} .gallery-item {
+                    float: {$float};
+                    margin-top: 10px;
+                    text-align: center;
+                    width: {$itemwidth}%;
+                }
+                #{$selector} img {
+                    border: 2px solid #cfcfcf;
+                    max-width: 90%;
+                }
+                #{$selector} .gallery-caption {
+                    margin-left: 0;
+                }
             </style>
             <!-- see gallery_shortcode() in wp-includes/media.php -->";
 
@@ -221,7 +223,7 @@ class No_Jetpack_Carousel {
         /* add filter bar */
         if (!empty($attr['filter'])) {
             $output .= "<div class='gallery-filter-box'>
-                            <p>查找:</p>
+                            <p>查找</p>
                             <input class='gallery-filter' type='text' />
                         </div>
                         <br style='clear: both'>";
